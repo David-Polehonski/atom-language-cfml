@@ -11,7 +11,7 @@
         'include': '$self'
       }
     ]
-  '(L:meta.scope.cfoutput.cfml) - ( comment.line.cfml | comment.block.cfml )':
+  '(meta.scope.cfoutput.cfml) - ( comment.line.cfml | comment.block.cfml )':
     'patterns': [
       {
         'include': '#hash-delimiters'
@@ -78,8 +78,6 @@
       }
     ]
   'cfoutput':
-    #'name': 'meta.tag.cfoutput.cfml'
-    #'contentName': 'meta.scope.cfoutput.cfml'
     'begin': '(?i)(?=<cfoutput)'
     'end': '(?i)(</)(cfoutput)(>)'
     'endCaptures':
