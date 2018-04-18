@@ -1010,8 +1010,22 @@ describe('html-cfml grammar', function() {
         });
     });
 
-    xit('should not tokenize embedded cf that is not surrounded by a <cfoutput> tag', function() {
-        // TODO
+    it('should allow cf embedded within JS', function() {
+      var tokens = grammar.tokenizeLines([
+        '<script type="text/javascript">',
+          '<cfoutput>',
+            'function doCabDrop(){',
+              'var params = new Object();',
+              'params.pudate = \'#dateformat(now(),"yyyy-mm-dd")#\';',
+              'params.putime = \'#timeformat(now(),"HH:nn:ss")#\';',
+              'params.userid = \'#session.googleid#\';',
+            '}',
+          '</cfoutput>',
+        '</script>'
+      ].join('\n'));
+
+      console.log(tokens);
+
     });
 
     xit('should tokenize cfml in unquoted attributes', function() {

@@ -3,14 +3,6 @@
 'fileTypes': [
   'cfc'
 ]
-'injections':
-  # Inject hash delimited expressions into cfoutput block; then restart the CFML pattern
-  '(meta.scope.cfoutput.cfml) - ( comment.line.cfml | comment.block.cfml )':
-    'patterns': [
-      {
-        'include': '#hash-delimiters'
-      }
-    ]
 'patterns': [
   {
     'include': '#cfml'
@@ -42,30 +34,30 @@
       }
     ]
   'cfscript':
-    'begin': '(?i)(<)(cfscript)(\\s+|>)'
-    'beginCaptures':
-      '0':
-        'name': 'meta.tag.cfml'
-      '1':
-        'name': 'punctuation.definition.tag.begin.cfml'
-      '2':
-        'name': 'entity.name.tag.cfml'
-      '3':
-        'name': 'punctuation.definition.tag.end.cfml'
+    'begin': '(?i)(?=<cfscript)'
     'end': '(?i)(</)(cfscript)(>)'
     'endCaptures':
       '0':
-        'name': 'meta.tag.cfml'
+        'name': 'meta.tag.cfscript.cfml'
       '1':
         'name': 'punctuation.definition.tag.begin.cfml'
       '2':
-        'name': 'entity.name.tag.cfml'
+        'name': 'entity.name.tag.cfscript.cfml'
       '3':
         'name': 'punctuation.definition.tag.end.cfml'
-    'contentName': 'source.cfscript'
     'patterns': [
       {
-        'include': 'source.cfscript'
+        'include': '#tag-start'
+      }
+      {
+        'begin': '(?!\\G)'
+        'end': '(?i)(?=</cfscript>)'
+        'name': 'meta.scope.cfscript.cfml'
+        'patterns': [
+          {
+            'include': 'source.cfscript'
+          }
+        ]
       }
     ]
   'cfoutput':
@@ -82,74 +74,41 @@
         'name': 'punctuation.definition.tag.end.cfml'
     'patterns': [
       {
-        'name': 'meta.tag.cfoutput.cfml'
-        'begin': '(?i)(<)(cfoutput)'
-        'beginCaptures':
-          '1':
-            'name': 'punctuation.definition.tag.begin.cfml'
-          '2':
-            'name': 'entity.name.tag.cfoutput.cfml'
-        'end': '(>)'
-        'endCaptures':
-          '1':
-            'name': 'punctuation.definition.tag.end.cfml'
-        'patterns': [
-          {
-            'include': '#tag-generic-attribute'
-          }
-        ]
+        'include': '#tag-start'
       }
       {
+        'begin': '(?!\\G)'
+        'end': '(?i)(?=</cfoutput>)'
         'name': 'meta.scope.cfoutput.cfml'
-        'begin': '(?!\\G|^)'
-        'end': '(?i)(?=</cfoutput>|$)'
         'patterns': [
-          {
-            'include': '$self'
-          }
+          { 'include': '#hash-delimiters' }
+          { 'include': '$base' }
         ]
       }
     ]
   'cfquery':
-    'begin': '(?i)(?=<cfquery\\b)'
+    'begin': '(?i)\\G(?=<cfquery)'
     'end': '(?i)(</)(cfquery)(>)'
     'endCaptures':
       '0':
-        'name': 'meta.tag.cfml'
+        'name': 'meta.tag.cfquery.cfml'
       '1':
         'name': 'punctuation.definition.tag.begin.cfml'
       '2':
-        'name': 'entity.name.tag.cfml'
+        'name': 'entity.name.tag.cfquery.cfml'
       '3':
         'name': 'punctuation.definition.tag.end.cfml'
     'patterns': [
       {
-        'begin': '(?i)(<)(cfquery)\\b'
-        'beginCaptures':
-          '1':
-            'name': 'punctuation.definition.tag.begin.cfml'
-          '2':
-            'name': 'entity.name.tag.cfml'
-        'end': '(?=>)'
-        'name': 'meta.tag.cfml'
-        'patterns': [
-          {
-            'include': '#tag-generic-attribute'
-          }
-        ]
+        'include': '#tag-start'
       }
       {
-        'begin': '(>)'
-        'beginCaptures':
-          '0':
-            'name': 'meta.tag.cfml'
-          '1':
-            'name': 'punctuation.definition.tag.end.cfml'
+        'name': 'meta.scope.cfquery.cfml'
+        'begin': '(?i)(?!\\G)'
         'end': '(?i)(?=</cfquery>)'
-        'contentName': 'meta.scope.cfquery.cfml'
         'patterns': [
           {
-            'include': '$self'
+            'include': '$self' # Allow CFML within the cfquery block, but not outer grammars
           }
           {
             'include': '#hash-delimiters'
